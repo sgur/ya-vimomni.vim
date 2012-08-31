@@ -29,6 +29,7 @@ set cpo&vim
 
 " The Other
 call yavimomni#ex_command#init()
+call yavimomni#user_command#init()
 " Just after :lockvar, :unlockvar, :let :unlet
 " After :if, :while :for
 call yavimomni#global_variable#init()
@@ -116,9 +117,11 @@ function! s:get_candidates_by_context(line)
     call extend(_, yavimomni#function#get())
     call extend(_, yavimomni#user_function#get())
     call extend(_, yavimomni#ex_command#get())
+    call extend(_, yavimomni#user_command#get())
   else
     " Ex commands
     call extend(_, yavimomni#ex_command#get())
+    call extend(_, yavimomni#user_command#get())
   endif
   return _
 endfunction
