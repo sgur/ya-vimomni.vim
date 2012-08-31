@@ -86,23 +86,29 @@ endfunction
 
 function! s:get_candidates_by_context(line)
   let _ = []
-  if a:line =~ '\<\%(let\|unl\%(et\)\?\|lockv\%(ar\)\?\|unlo\%(ckvar\)\?\)!\?\s\+$'
-    " Global variables + script variables
-    call extend(_, yavimomni#global_variable#get())
+  if a:line =~ "has(['\"]"
+    " Features
+    call extend(_, yavimomni#feature#get())
+  elseif a:line =~ 'let\s\+.\+\s*[+-.]\?=\s*'
     call extend(_, yavimomni#script_variable#get())
+    call extend(_, yavimomni#global_variable#get())
     call extend(_, yavimomni#vim_variable#get())
-  elseif a:line =~ '\<\%(\%(call\?\|retu\%(rn\)\?\)\s\+$\|let\s\+\k\+\s*=\s*\)'
+    call extend(_, yavimomni#function#get())
+    call extend(_, yavimomni#user_function#get())
+  elseif a:line =~ '\<\%(let\|unl\%(et\)\?\|lockv\%(ar\)\?\|unlo\%(ckvar\)\?\)!\?\s\+$'
+    " Global variables + script variables
+    call extend(_, yavimomni#script_variable#get())
+    call extend(_, yavimomni#global_variable#get())
+    call extend(_, yavimomni#vim_variable#get())
+  elseif a:line =~ '\<\%(\%(call\?\|retu\%(rn\)\?\)\s\+$\)'
     " Builtin functions + user funcions
     call extend(_, yavimomni#function#get())
     call extend(_, yavimomni#user_function#get())
-  elseif a:line =~ "has(['\"]"
-    " Features
-    call extend(_, yavimomni#feature#get())
   elseif a:line =~ '\i\+\s*('
         \ || a:line =~ '\%(if\|elseif\?\|wh\%(ile\)\?\|for\)\s\+'
     " Functions and variables
-    call extend(_, yavimomni#global_variable#get())
     call extend(_, yavimomni#script_variable#get())
+    call extend(_, yavimomni#global_variable#get())
     call extend(_, yavimomni#vim_variable#get())
     call extend(_, yavimomni#function#get())
     call extend(_, yavimomni#user_function#get())
