@@ -1,11 +1,14 @@
 " Script-local variables
+" FIMXE: won't work
 
 function! yavimomni#script_variable#init()
-  let s:scriptlocals = map(keys(s:), 'substitute(v:val, "^", "s:", "g")')
 endfunction
 
 
 function! yavimomni#script_variable#get()
-  " return s:
-  return map(keys(s:), 'substitute(v:val, "^", "s:", "g")')
+  let lines = getline(1, '$')
+  return map(filter(map(lines,
+        \ 'matchstr(v:val, "let\\s\\+s:\\zs\\k\\+\\ze\\s*=")'),
+        \ '!empty(v:val)'),
+        \ 'substitute(v:val, "^", "s:", "")')
 endfunction
