@@ -5,20 +5,25 @@ function! yavimomni#function#init()
   if filereadable(helpfile)
     let lines = readfile(helpfile)
     let functions = []
-    let start = match(lines, '^USAGE')
+    let start = match(lines, '^abs')
     let end = match(lines, '^abs', start, 2)
-    for l in lines[start : end]
-      let _ = matchlist(l, '^\(\i\+(\).\+\t\(.\+[^*]\)$')
+    let desc = ''
+    for i in range(end-1, start, -1)
+      let desc = substitute(lines[i], '^\s\+\ze\S', '', '').' '.desc
+      let _ = matchlist(desc, '^\s*\(\i\+(\).\+\t\(.\+[^*]\)$')
       if !empty(_)
-        call add(functions, {
+        call insert(functions, {
               \ 'word' : _[1],
               \ 'menu' : _[2],
               \ })
         " \ 'info' : _[2],
+        let desc = ''
       endif
     endfor
+    let s:builtin_functions = functions
+  else
+    echoerr 'yavimomni: vim help file not readable.'
   endif
-  let s:builtin_functions = functions
 endfunction
 
 
