@@ -1,7 +1,7 @@
 " Built-in functions
 
 function! yavimomni#function#init()
-  let helpfile = expand('$VIMRUNTIME/doc/eval.txt')
+  let helpfile = expand(findfile('doc/eval.txt', &runtimepath))
   if filereadable(helpfile)
     let lines = readfile(helpfile)
     let functions = []

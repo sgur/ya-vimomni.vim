@@ -1,7 +1,7 @@
 " Ex-commands
 
 function! yavimomni#ex_command#init()
-  let helpfile = expand('$VIMRUNTIME/doc/index.txt')
+  let helpfile = expand(findfile('doc/index.txt', &runtimepath))
   if filereadable(helpfile)
     let lines = readfile(helpfile)
     let exs = []

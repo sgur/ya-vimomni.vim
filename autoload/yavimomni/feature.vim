@@ -1,7 +1,7 @@
 " feature
 
 function! yavimomni#feature#init()
-  let helpfile = expand('$VIMRUNTIME/doc/various.txt')
+  let helpfile = expand(findfile('doc/eval.txt', &runtimepath))
   if filereadable(helpfile)
     let lines = readfile(helpfile)
     let start = match(lines, '^all_builtin_terms')
