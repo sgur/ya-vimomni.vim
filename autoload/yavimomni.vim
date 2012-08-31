@@ -34,6 +34,7 @@ call yavimomni#user_command#init()
 " After :if, :while :for
 call yavimomni#global_variable#init()
 call yavimomni#script_variable#init()
+call yavimomni#vim_variable#init()
 " After :call, :return, :let {var}=
 " Parameters
 call yavimomni#function#init()
@@ -89,6 +90,7 @@ function! s:get_candidates_by_context(line)
     " Global variables + script variables
     call extend(_, yavimomni#global_variable#get())
     call extend(_, yavimomni#script_variable#get())
+    call extend(_, yavimomni#vim_variable#get())
   elseif a:line =~ '\<\%(\%(call\?\|retu\%(rn\)\?\)\s\+$\|let\s\+\k\+\s*=\s*\)'
     " Builtin functions + user funcions
     call extend(_, yavimomni#function#get())
@@ -101,6 +103,7 @@ function! s:get_candidates_by_context(line)
     " Functions and variables
     call extend(_, yavimomni#global_variable#get())
     call extend(_, yavimomni#script_variable#get())
+    call extend(_, yavimomni#vim_variable#get())
     call extend(_, yavimomni#function#get())
     call extend(_, yavimomni#user_function#get())
   elseif a:line =~ '\<\%(set\s\+\|let &\)$'
@@ -125,7 +128,6 @@ function! s:get_candidates_by_context(line)
   endif
   return _
 endfunction
-
 
 
 let &cpo = s:save_cpo
