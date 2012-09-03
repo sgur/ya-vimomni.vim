@@ -6,5 +6,14 @@ endfunction
 
 
 function! yavimomni#global_variable#get()
-  return s:globals
+  let retval = []
+  for g in s:globals
+    try
+      let explanation = string(get(g:, substitute(g, '^g:', '', '')))
+    catch /^Vim\%((\a\+)\)\=:E724/  " for circular references
+      let explanation = '... (Circular references)'
+    endtry
+    call add(retval, {'word': g, 'menu' : explanation})
+  endfor
+  return retval
 endfunction
