@@ -19,9 +19,10 @@ function! yavimomni#feature#init()
     endfor
     let s:features = features
   endif
+  echomsg "Features" len(s:features)
 endfunction
 
 
-function! yavimomni#feature#get()
-  return s:features
+function! yavimomni#feature#get(arglead)
+  return filter(copy(s:features), 'stridx(v:val, a:arglead) >= 0')
 endfunction

@@ -10,9 +10,10 @@ function! yavimomni#option#init()
         \ '!empty(v:val)'),
         \ 'substitute(v:val, "^no", "", "")')
   let s:options = options + map(copy(options), 'substitute(v:val, "^", "no", "")')
+  echomsg 'Options' len(s:options)
 endfunction
 
 
-function! yavimomni#option#get()
-  return s:options
+function! yavimomni#option#get(arglead)
+  return filter(copy(s:options), 'stridx(v:val, a:arglead) >= 0')
 endfunction

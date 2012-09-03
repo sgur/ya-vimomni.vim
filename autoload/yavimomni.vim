@@ -57,7 +57,7 @@ function! yavimomni#complete(findstart, base)
     return start
   else
     let sentence = s:concat_lines('.', '.')
-    let _ = s:get_candidates_by_context(sentence)
+    let _ = s:get_candidates_by_context(sentence, a:base)
     return filter(_, 's:start_with(v:val, a:base)')
   endif
 endfunction
@@ -84,37 +84,37 @@ function! s:concat_lines(line, col)
 endfunction
 
 
-function! s:get_candidates_by_context(line)
+function! s:get_candidates_by_context(line, arglead)
   let _ = []
   if a:line =~ "has(['\"]"
     " Features
-    call extend(_, yavimomni#feature#get())
+    call extend(_, yavimomni#feature#get(a:arglead))
   elseif a:line =~ 'let\s\+.\+\s*[+-.]\?=\s*'
-    call extend(_, yavimomni#script_variable#get())
-    call extend(_, yavimomni#global_variable#get())
-    call extend(_, yavimomni#vim_variable#get())
-    call extend(_, yavimomni#function#get())
-    call extend(_, yavimomni#user_function#get())
+    call extend(_, yavimomni#script_variable#get(a:arglead))
+    call extend(_, yavimomni#global_variable#get(a:arglead))
+    call extend(_, yavimomni#vim_variable#get(a:arglead))
+    call extend(_, yavimomni#function#get(a:arglead))
+    call extend(_, yavimomni#user_function#get(a:arglead))
   elseif a:line =~ '\<\%(let\|unl\%(et\)\?\|lockv\%(ar\)\?\|unlo\%(ckvar\)\?\)!\?\s\+$'
     " Global variables + script variables
-    call extend(_, yavimomni#script_variable#get())
-    call extend(_, yavimomni#global_variable#get())
-    call extend(_, yavimomni#vim_variable#get())
+    call extend(_, yavimomni#script_variable#get(a:arglead))
+    call extend(_, yavimomni#global_variable#get(a:arglead))
+    call extend(_, yavimomni#vim_variable#get(a:arglead))
   elseif a:line =~ '\<\%(\%(call\?\|retu\%(rn\)\?\)\s\+$\)'
     " Builtin functions + user funcions
-    call extend(_, yavimomni#function#get())
-    call extend(_, yavimomni#user_function#get())
+    call extend(_, yavimomni#function#get(a:arglead))
+    call extend(_, yavimomni#user_function#get(a:arglead))
   elseif a:line =~ '\i\+\s*('
         \ || a:line =~ '\%(if\|elseif\?\|wh\%(ile\)\?\|for\)\s\+'
     " Functions and variables
-    call extend(_, yavimomni#script_variable#get())
-    call extend(_, yavimomni#global_variable#get())
-    call extend(_, yavimomni#vim_variable#get())
-    call extend(_, yavimomni#function#get())
-    call extend(_, yavimomni#user_function#get())
+    call extend(_, yavimomni#script_variable#get(a:arglead))
+    call extend(_, yavimomni#global_variable#get(a:arglead))
+    call extend(_, yavimomni#vim_variable#get(a:arglead))
+    call extend(_, yavimomni#function#get(a:arglead))
+    call extend(_, yavimomni#user_function#get(a:arglead))
   elseif a:line =~ '\<\%(set\s\+\|let &\)$'
     " Options
-    call extend(_, yavimomni#option#get())
+    call extend(_, yavimomni#option#get(a:arglead))
   elseif a:line =~ '\<\%(' . join([
         \ 's\?map', 'map!', '[nvxoilc]m\%(ap\)\?', 'no\%(remap\)\?',
         \ '\%(nn\|vn\|xn\)\%(oremap\)\?', 'snor\%(emap\)\?',
@@ -122,15 +122,15 @@ function! s:get_candidates_by_context(line)
         \ 'cno\%(remap\)\?',
         \ ], '\|') . '\)\>'
     " Map arguments
-    call extend(_, yavimomni#map_argument#get())
-    call extend(_, yavimomni#function#get())
-    call extend(_, yavimomni#user_function#get())
-    call extend(_, yavimomni#ex_command#get())
-    call extend(_, yavimomni#user_command#get())
+    call extend(_, yavimomni#map_argument#get(a:arglead))
+    call extend(_, yavimomni#function#get(a:arglead))
+    call extend(_, yavimomni#user_function#get(a:arglead))
+    call extend(_, yavimomni#ex_command#get(a:arglead))
+    call extend(_, yavimomni#user_command#get(a:arglead))
   else
     " Ex commands
-    call extend(_, yavimomni#ex_command#get())
-    call extend(_, yavimomni#user_command#get())
+    call extend(_, yavimomni#ex_command#get(a:arglead))
+    call extend(_, yavimomni#user_command#get(a:arglead))
   endif
   return _
 endfunction

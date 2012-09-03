@@ -2,10 +2,11 @@
 
 function! yavimomni#global_variable#init()
   let s:globals = map(keys(g:), 'substitute(v:val, "^", "g:", "g")')
+  echomsg 'Global variables' len(s:globals)
 endfunction
 
 
-function! yavimomni#global_variable#get()
+function! yavimomni#global_variable#get(arglead)
   let retval = []
   for g in s:globals
     try
@@ -15,5 +16,5 @@ function! yavimomni#global_variable#get()
     endtry
     call add(retval, {'word': g, 'menu' : explanation})
   endfor
-  return retval
+  return filter(copy(retval), 'stridx(v:val.word, a:arglead) >= 0')
 endfunction

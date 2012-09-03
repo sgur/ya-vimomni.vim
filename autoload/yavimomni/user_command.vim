@@ -4,11 +4,11 @@ function! yavimomni#user_command#init()
 endfunction
 
 
-function! yavimomni#user_command#get()
+function! yavimomni#user_command#get(arglead)
   if !exists('b:user_commands')
     let b:user_commands = s:init()
   endif
-  return b:user_commands
+  return filter(copy(b:user_commands), 'stridx(v:val, a:arglead) >= 0')
 endfunction
 
 

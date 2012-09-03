@@ -24,9 +24,10 @@ function! yavimomni#function#init()
   else
     echoerr 'yavimomni: vim help file not readable.'
   endif
+  echomsg "Builtin functions" len(s:builtin_functions)
 endfunction
 
 
-function! yavimomni#function#get()
-  return s:builtin_functions
+function! yavimomni#function#get(arglead)
+  return filter(copy(s:builtin_functions), 'stridx(v:val.word, a:arglead) >= 0')
 endfunction

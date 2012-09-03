@@ -5,10 +5,10 @@ function! yavimomni#script_variable#init()
 endfunction
 
 
-function! yavimomni#script_variable#get()
-  let lines = getline(1, '$')
-  return map(filter(map(lines,
+function! yavimomni#script_variable#get(arglead)
+  let vars =  map(filter(map(getline(1, '$'),
         \ 'matchstr(v:val, "let\\s\\+s:\\zs\\k\\+\\ze\\s*=")'),
         \ '!empty(v:val)'),
         \ 'substitute(v:val, "^", "s:", "")')
+  return filter(copy(vars), 'stridx(v:val, a:arglead) >= 0')
 endfunction

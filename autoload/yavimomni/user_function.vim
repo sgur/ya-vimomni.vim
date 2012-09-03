@@ -10,15 +10,16 @@ function! yavimomni#user_function#init()
 endfunction
 
 
-function! yavimomni#user_function#get()
+function! yavimomni#user_function#get(arglead)
   let scriptnames = s:scriptnames()
   if len(scriptnames) > len(s:scriptnames)
     call yavimomni#user_function#init()
   endif
   let sid = s:scriptnames[fnamemodify(expand('%'), ':p')]
-  return filter(map(s:functions,
+  let _ = filter(map(s:functions,
         \ 'substitute(v:val, "<SNR>".sid."\\+_", "s:", "g")'),
-        \ 'stridx(v:val, "<SNR>")')
+        \ 'stridx(v:val, "<SNR>") == -1')
+  return filter(_, 'stridx(v:val, a:arglead) >= 0')
 endfunction
 
 

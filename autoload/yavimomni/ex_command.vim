@@ -17,9 +17,10 @@ function! yavimomni#ex_command#init()
     endfor
     let s:ex_commands = exs
   endif
+  echomsg 'Ex commands' len(s:ex_commands)
 endfunction
 
 
-function! yavimomni#ex_command#get()
-  return s:ex_commands
+function! yavimomni#ex_command#get(arglead)
+  return filter(copy(s:ex_commands), 'stridx(v:val.word, a:arglead) >= 0')
 endfunction
