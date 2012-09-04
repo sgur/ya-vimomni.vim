@@ -15,10 +15,13 @@ function! yavimomni#user_function#get(arglead)
   if len(scriptnames) > len(s:scriptnames)
     call yavimomni#user_function#init()
   endif
-  let sid = s:scriptnames[fnamemodify(expand('%'), ':p')]
-  let _ = filter(map(s:functions,
-        \ 'substitute(v:val, "<SNR>".sid."\\+_", "s:", "g")'),
-        \ 'stridx(v:val, "<SNR>") == -1')
+  let fname = fnamemodify(expand("%"), ":p")
+  let _ = copy(s:functions)
+  if has_key(s:scriptnames, fname)
+    let sid = s:scriptnames[fname]
+    call map(_, 'substitute(v:val, "<SNR>".sid."\\+_", "s:", "g")')
+  endif
+  call filter(_, 'stridx(v:val, "<SNR>") == -1')
   return filter(_, 'stridx(v:val, a:arglead) >= 0')
 endfunction
 
