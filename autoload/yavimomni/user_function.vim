@@ -19,7 +19,7 @@ function! yavimomni#user_function#get(arglead)
   let _ = copy(s:functions)
   if has_key(s:scriptnames, fname)
     let sid = s:scriptnames[fname]
-    call map(_, 'substitute(v:val, "<SNR>".sid."\\+_", "s:", "g")')
+    call map(_, 'substitute(v:val, "<SNR>".sid."_", "s:", "")')
   endif
   call filter(_, 'stridx(v:val, "<SNR>") == -1')
   return filter(_, 'stridx(v:val, a:arglead) >= 0')
