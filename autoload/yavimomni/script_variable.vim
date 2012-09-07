@@ -1,5 +1,4 @@
 " Script-local variables
-" FIMXE: won't work
 
 function! yavimomni#script_variable#init()
 endfunction

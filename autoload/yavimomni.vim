@@ -32,9 +32,8 @@ call yavimomni#ex_command#init()
 call yavimomni#user_command#init()
 " Just after :lockvar, :unlockvar, :let :unlet
 " After :if, :while :for
-call yavimomni#global_variable#init()
+call yavimomni#variable#init()
 call yavimomni#script_variable#init()
-call yavimomni#vim_variable#init()
 " After :call, :return, :let {var}=
 " Parameters
 call yavimomni#function#init()
@@ -91,15 +90,13 @@ function! s:get_candidates_by_context(line, arglead)
     call extend(_, yavimomni#feature#get(a:arglead))
   elseif a:line =~ 'let\s\+.\+\s*[+-.]\?=\s*'
     call extend(_, yavimomni#script_variable#get(a:arglead))
-    call extend(_, yavimomni#global_variable#get(a:arglead))
-    call extend(_, yavimomni#vim_variable#get(a:arglead))
+    call extend(_, yavimomni#variable#get(a:arglead))
     call extend(_, yavimomni#function#get(a:arglead))
     call extend(_, yavimomni#user_function#get(a:arglead))
   elseif a:line =~ '\<\%(let\|unl\%(et\)\?\|lockv\%(ar\)\?\|unlo\%(ckvar\)\?\)!\?\s\+$'
     " Global variables + script variables
     call extend(_, yavimomni#script_variable#get(a:arglead))
-    call extend(_, yavimomni#global_variable#get(a:arglead))
-    call extend(_, yavimomni#vim_variable#get(a:arglead))
+    call extend(_, yavimomni#variable#get(a:arglead))
   elseif a:line =~ '\<\%(\%(call\?\|retu\%(rn\)\?\)\s\+$\)'
     " Builtin functions + user funcions
     call extend(_, yavimomni#function#get(a:arglead))
@@ -108,8 +105,7 @@ function! s:get_candidates_by_context(line, arglead)
         \ || a:line =~ '\%(if\|elseif\?\|wh\%(ile\)\?\|for\)\s\+'
     " Functions and variables
     call extend(_, yavimomni#script_variable#get(a:arglead))
-    call extend(_, yavimomni#global_variable#get(a:arglead))
-    call extend(_, yavimomni#vim_variable#get(a:arglead))
+    call extend(_, yavimomni#variable#get(a:arglead))
     call extend(_, yavimomni#function#get(a:arglead))
     call extend(_, yavimomni#user_function#get(a:arglead))
   elseif a:line =~ '\<\%(set\s\+\|let &\)$'
