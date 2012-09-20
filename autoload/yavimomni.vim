@@ -127,6 +127,8 @@ function! s:get_candidates_by_context(line, arglead)
     " Ex commands
     call extend(_, yavimomni#ex_command#get(a:arglead))
     call extend(_, yavimomni#user_command#get(a:arglead))
+    call extend(_, yavimomni#function#get(a:arglead))
+    call extend(_, yavimomni#user_function#get(a:arglead))
   endif
   return _
 endfunction
