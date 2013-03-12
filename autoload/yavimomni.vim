@@ -88,26 +88,6 @@ function! s:get_candidates_by_context(line, arglead)
   if a:line =~ "has(['\"]"
     " Features
     call extend(_, yavimomni#feature#get(a:arglead))
-  elseif a:line =~ 'let\s\+.\+\s*[+-.]\?=\s*'
-    call extend(_, yavimomni#script_variable#get(a:arglead))
-    call extend(_, yavimomni#variable#get(a:arglead))
-    call extend(_, yavimomni#function#get(a:arglead))
-    call extend(_, yavimomni#user_function#get(a:arglead))
-  elseif a:line =~ '\<\%(let\|unl\%(et\)\?\|lockv\%(ar\)\?\|unlo\%(ckvar\)\?\)!\?\s\+$'
-    " Global variables + script variables
-    call extend(_, yavimomni#script_variable#get(a:arglead))
-    call extend(_, yavimomni#variable#get(a:arglead))
-  elseif a:line =~ '\<\%(\%(call\?\|retu\%(rn\)\?\)\s\+$\)'
-    " Builtin functions + user funcions
-    call extend(_, yavimomni#function#get(a:arglead))
-    call extend(_, yavimomni#user_function#get(a:arglead))
-  elseif a:line =~ '\i\+\s*('
-        \ || a:line =~ '\%(if\|elseif\?\|wh\%(ile\)\?\|for\)\s\+'
-    " Functions and variables
-    call extend(_, yavimomni#script_variable#get(a:arglead))
-    call extend(_, yavimomni#variable#get(a:arglead))
-    call extend(_, yavimomni#function#get(a:arglead))
-    call extend(_, yavimomni#user_function#get(a:arglead))
   elseif a:line =~ '\<\%(set\s\+\|let &\)$'
     " Options
     call extend(_, yavimomni#option#get(a:arglead))
@@ -119,20 +99,16 @@ function! s:get_candidates_by_context(line, arglead)
         \ ], '\|') . '\)\>'
     " Map arguments
     call extend(_, yavimomni#map_argument#get(a:arglead))
-    call extend(_, yavimomni#function#get(a:arglead))
-    call extend(_, yavimomni#user_function#get(a:arglead))
-    call extend(_, yavimomni#ex_command#get(a:arglead))
-    call extend(_, yavimomni#user_command#get(a:arglead))
-  else
-    " Ex commands
-    call extend(_, yavimomni#ex_command#get(a:arglead))
-    call extend(_, yavimomni#user_command#get(a:arglead))
-    call extend(_, yavimomni#function#get(a:arglead))
-    call extend(_, yavimomni#user_function#get(a:arglead))
   endif
+  " Ex commands
+  call extend(_, yavimomni#ex_command#get(a:arglead))
+  call extend(_, yavimomni#function#get(a:arglead))
+  call extend(_, yavimomni#script_variable#get(a:arglead))
+  call extend(_, yavimomni#user_command#get(a:arglead))
+  call extend(_, yavimomni#user_function#get(a:arglead))
+  call extend(_, yavimomni#variable#get(a:arglead))
   return _
 endfunction
-
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
