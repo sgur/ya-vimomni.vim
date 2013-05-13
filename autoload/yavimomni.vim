@@ -61,6 +61,10 @@ function! yavimomni#complete(findstart, base)
   endif
 endfunction
 
+function! yavimomni#candidates(base)
+  let sentence = s:concat_lines('.', '.')
+  return s:get_candidates_by_context(sentence, a:base)
+endfunction
 
 function! s:start_with(haystack, needle)
   return type(a:haystack) == type({})
