@@ -22,7 +22,9 @@ function! yavimomni#user_function#get(arglead)
     call map(_, 'substitute(v:val, "<SNR>".sid."_", "s:", "")')
   endif
   call filter(_, 'stridx(v:val, "<SNR>") == -1')
-  return filter(_, 'stridx(v:val, a:arglead) >= 0')
+
+  return yavimomni#util#convert_list_candidates(
+      \ filter(_, 'stridx(v:val, a:arglead) >= 0'))
 endfunction
 
 

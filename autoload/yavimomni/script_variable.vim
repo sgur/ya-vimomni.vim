@@ -9,5 +9,7 @@ function! yavimomni#script_variable#get(arglead)
         \ 'matchstr(v:val, "let\\s\\+s:\\zs\\k\\+\\ze\\s*=")'),
         \ '!empty(v:val)'),
         \ 'substitute(v:val, "^", "s:", "")')
-  return filter(copy(vars), 'stridx(v:val, a:arglead) >= 0')
+
+  return yavimomni#util#convert_list_candidates(
+      \ filter(copy(vars), 'stridx(v:val, a:arglead) >= 0'))
 endfunction
