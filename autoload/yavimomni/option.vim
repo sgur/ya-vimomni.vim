@@ -15,5 +15,6 @@ endfunction
 
 
 function! yavimomni#option#get(arglead)
-  return filter(copy(s:options), 'stridx(v:val, a:arglead) >= 0')
+  return yavimomni#util#convert_list_candidates(
+      \ filter(copy(s:options), 'stridx(v:val, a:arglead) >= 0'))
 endfunction
