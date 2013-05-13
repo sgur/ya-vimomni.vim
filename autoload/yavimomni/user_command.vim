@@ -8,7 +8,9 @@ function! yavimomni#user_command#get(arglead)
   if !exists('b:user_commands')
     let b:user_commands = s:init()
   endif
-  return filter(copy(b:user_commands), 'stridx(v:val, a:arglead) >= 0')
+
+  return yavimomni#util#convert_list_candidates(
+      \ filter(copy(b:user_commands), 'stridx(v:val, a:arglead) >= 0'))
 endfunction
 
 
