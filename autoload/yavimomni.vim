@@ -86,31 +86,61 @@ function! s:concat_lines(line, col)
   return line
 endfunction
 
-
 function! s:get_candidates_by_context(line, arglead)
+  let candidates = s:enable_module_from_pattern(a:line)
+
   let _ = []
+  for k in keys(candidates)
+    if candidates[k] == 1
+      call extend(_, yavimomni#{k}#get(a:arglead))
+    endif
+  endfor
+  return _
+endfunction
+
+
+function! s:enable_module_from_pattern(line)
+  let _ = { 'ex_command' : 1
+        \ , 'feature' : 1
+        \ , 'function' : 1
+        \ , 'map_argument' : 1
+        \ , 'option' : 1
+        \ , 'script_variable' : 1
+        \ , 'user_command' : 1
+        \ , 'user_function' : 1
+        \ , 'variable' : 1
+        \ }
+
   if a:line =~ "has(['\"]"
-    " Features
-    call extend(_, yavimomni#feature#get(a:arglead))
-  elseif a:line =~ '\<\%(set\s\+\|let &\)$'
-    " Options
-    call extend(_, yavimomni#option#get(a:arglead))
-  elseif a:line =~ '\<\%(' . join([
+    let _.feature = 1
+  else
+    let _.feature = 0
+  endif
+
+  if a:line =~ '\<\%(set\s\+\|let &\)$'
+    let _.option = 1
+    let _.ex_command = 0
+  else
+    let _.option = 0
+    let _.ex_command = 1
+  endif
+
+  if a:line =~ '\<\%(' . join([
         \ 's\?map', 'map!', '[nvxoilc]m\%(ap\)\?', 'no\%(remap\)\?',
         \ '\%(nn\|vn\|xn\)\%(oremap\)\?', 'snor\%(emap\)\?',
         \ '\%(ono\|no\|ino\)\%(remap\)\?', 'ln\%(oremap\)\?',
         \ 'cno\%(remap\)\?',
         \ ], '\|') . '\)\>'
-    " Map arguments
-    call extend(_, yavimomni#map_argument#get(a:arglead))
+    let _.map_argument = 1
+  else
+    let _.map_argument = 0
   endif
-  " Ex commands
-  call extend(_, yavimomni#ex_command#get(a:arglead))
-  call extend(_, yavimomni#function#get(a:arglead))
-  call extend(_, yavimomni#script_variable#get(a:arglead))
-  call extend(_, yavimomni#user_command#get(a:arglead))
-  call extend(_, yavimomni#user_function#get(a:arglead))
-  call extend(_, yavimomni#variable#get(a:arglead))
+
+  if a:line =~ '^\s*$'
+    let _.function = 0
+  else
+    let _.function = 1
+  endif
   return _
 endfunction
 
