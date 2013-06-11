@@ -10,13 +10,13 @@ function! yavimomni#function#init()
     let desc = ''
     for i in range(end-1, start, -1)
       let desc = substitute(lines[i], '^\s\+\ze\S', '', '').' '.desc
-      let _ = matchlist(desc, '^\s*\(\i\+(\).\+\t\(.\+[^*]\)$')
+      let _ = matchlist(desc, '^\s*\(\(\i\+(\).\+)\)\s\+\(\w\+\)\s\+\(.\+[^*]\)$')
       if !empty(_)
         call insert(functions, {
-              \ 'word' : _[1],
-              \ 'menu' : _[2],
+              \ 'word' : _[2],
+              \ 'menu' : _[1],
+              \ 'info' : _[1] . "\n" . _[4]
               \ })
-        " \ 'info' : _[2],
         let desc = ''
       endif
     endfor
