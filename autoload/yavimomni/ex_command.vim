@@ -5,14 +5,19 @@ function! yavimomni#ex_command#init()
   if filereadable(helpfile)
     let lines = readfile(helpfile)
     let exs = []
-    for l in lines
-      let _ = matchlist(l, '^|:\(.\+\)|.\+\t\(.\+\)$')
+    let start = match(lines, '^|:!|')
+    let end = match(lines, '^|:\~|', start)
+    let desc = ''
+    for lnum in range(end, start, -1)
+      let desc = substitute(lines[lnum], '^\s\+\ze', '', 'g') . ' ' . desc
+      let _ = matchlist(desc, '^|:\(.\+\)|\s\+\S\+\s\+\(.\+\)$')
       if !empty(_)
         call add(exs, {
               \ 'word' : _[1],
               \ 'menu' : _[2],
               \ })
-        " \ 'info' : _[2],
+              " \ 'info' : _[1] . "\n" . _[2]
+        let desc = ''
       endif
     endfor
     let s:ex_commands = exs
