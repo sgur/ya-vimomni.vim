@@ -49,36 +49,39 @@ call yavimomni#colorscheme#init()
 
 
 function! yavimomni#complete(findstart, base)
-  if a:findstart
+  if a:findstart " 1st time
     let start = col('.') - 1
     let line = getline('.')
     while start > 0 && line[start-1] =~ '\k\|[<>]'
       let start -= 1
     endwhile
     return start
-  else
+  else " 2nd time
     let sentence = s:concat_lines('.', '.')
-    let _ = s:get_candidates_by_context(sentence, a:base)
-    return filter(_, 's:start_with(v:val, a:base)')
+    let matches_member = matchlist(sentence,  '\(\%(\k\+\.\)*\k\+\)\.\k*$')
+    let matches_bracket = matchlist(sentence, '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*\]\?$')
+    if !empty(matches_member) " member completion
+      return s:get_candidates_of_membeer(matches_member[1], a:base)
+    elseif !empty(matches_bracket) "bracket completion
+      echomsg 'ARGLEAD' a:base '/' matches_bracket[2]
+      return s:get_candidates_of_bracket(matches_bracket[1], a:base)
+    else " word completion
+      return s:get_candidates_by_context(sentence, a:base)
+    endif
   endif
 endfunction
+
 
 function! yavimomni#candidates(base)
   let sentence = s:concat_lines('.', '.')
   return s:get_candidates_by_context(sentence, a:base)
 endfunction
 
-function! s:start_with(haystack, needle)
-  return type(a:haystack) == type({})
-        \ ? !stridx(a:haystack.word, a:needle)
-        \ : !stridx(a:haystack, a:needle)
-endfunction
-
 
 function! s:concat_lines(line, col)
   let lnum = (type(a:line) == type(0)) ? a:line : line(a:line)
-  let col  = (type(a:col) == type(0))  ? a:col  : line(a:col)
-  let line = getline(lnum)[:col-1]
+  let col  = (type(a:col) == type(0))  ? a:col  : col(a:col)
+  let line = getline(lnum)[:col]
   let match = matchstr(line, '^\s*\\\zs.\+$')
   while match != '' && lnum > 1
     let lnum -= 1
@@ -95,6 +98,30 @@ function! s:get_candidates_by_context(line, arglead)
     call extend(_, yavimomni#{c}#get(a:arglead))
   endfor
   return _
+endfunction
+
+
+function! s:get_candidates_of_membeer(receiver, arglead)
+  if !exists(a:receiver)
+    return []
+  endif
+  let recv = eval(a:receiver)
+  if type(recv) != type({})
+    return []
+  endif
+  return map(keys(recv), '{"word" : v:val , "menu" : string(eval(a:receiver . "[\"" . v:val . "\"]"))}')
+endfunction
+
+
+function! s:get_candidates_of_bracket(receiver, arglead)
+  if !exists(a:receiver)
+    return []
+  endif
+  let recv = eval(a:receiver)
+  if type(recv) != type({})
+    return []
+  endif
+  return map(keys(recv), '{"word" : "''" . v:val . "'']", "menu" : string(eval(a:receiver . "[\"" . v:val . "\"]"))}')
 endfunction
 
 
