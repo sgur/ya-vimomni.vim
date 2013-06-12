@@ -88,52 +88,32 @@ function! s:concat_lines(line, col)
   return line
 endfunction
 
-function! s:get_candidates_by_context(line, arglead)
-  let candidates = s:enable_module_from_pattern(a:line)
 
+function! s:get_candidates_by_context(line, arglead)
   let _ = []
-  for k in keys(candidates)
-    if candidates[k] == 1
-      call extend(_, yavimomni#{k}#get(a:arglead))
-    endif
+  for c in s:enable_module_from_pattern(a:line)
+    call extend(_, yavimomni#{c}#get(a:arglead))
   endfor
   return _
 endfunction
 
 
 function! s:enable_module_from_pattern(line)
-  let _ = { 'ex_command' : 0
-        \ , 'feature' : 0
-        \ , 'function' : 0
-        \ , 'map_argument' : 0
-        \ , 'option' : 0
-        \ , 'script_variable' : 0
-        \ , 'user_command' : 0
-        \ , 'user_function' : 0
-        \ , 'variable' : 0
-        \ , 'colorscheme' : 0
-        \ }
+  let _ = []
 
   if a:line =~ 'colo\%[rscheme]\s\+$'
-    let _.colorscheme = 1
+    call add(_, 'colorscheme')
     return _
-  else
-    let _.colorscheme = 0
   endif
 
   if a:line =~ "has(['\"]"
-    let _.feature = 1
+    call add(_, 'feature')
     return _
-  else
-    let _.feature = 0
   endif
 
-  if a:line =~ '\<\%(set\s\+\|let &\)$'
-    let _.option = 1
-    let _.ex_command = 0
-  else
-    let _.option = 0
-    let _.ex_command = 1
+  if a:line =~ '\<\%(se\%[tlocal]\s\+\|let\s\+&\%(\.:\)\?\)'
+    call add(_, 'option')
+    return _
   endif
 
   if a:line =~ '\<\%(' . join([
@@ -142,16 +122,16 @@ function! s:enable_module_from_pattern(line)
         \ '\%(ono\|no\|ino\)\%(remap\)\?', 'ln\%(oremap\)\?',
         \ 'cno\%(remap\)\?',
         \ ], '\|') . '\)\>'
-    let _.map_argument = 1
-  else
-    let _.map_argument = 0
+    call add(_, 'map_argument')
   endif
 
-  if a:line =~ '^\s*$'
-    let _.function = 0
-  else
-    let _.function = 1
+  if a:line !~ '^\s*$'
+    call add(_, 'function')
   endif
+
+  call extend(_, ['ex_command', 'user_command'])
+  call extend(_, ['script_variable', 'variable'])
+  call extend(_, ['function', 'user_function'])
 
   return _
 endfunction
