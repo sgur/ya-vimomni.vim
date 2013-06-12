@@ -7,10 +7,9 @@ function! yavimomni#option#init()
   redir => raw
   silent set all
   redir END
-  let options = map(filter(map(
-        \ split(raw, '\s\{2,}\|\n')[1:],
-        \ 'split(v:val, "=", 1)[0]'),
-        \ '!empty(v:val)'),
+  let options = map(filter(
+        \ map(split(raw, '\s\{2,}\|\n')[1:], 'split(v:val, "=", 1)[0]'),
+        \ '!empty(v:val) && exists("&".v:val)'),
         \ 'substitute(v:val, "^no", "", "")')
   let s:options = options
   echomsg 'Options' len(s:options)
@@ -18,8 +17,10 @@ endfunction
 
 
 function! yavimomni#option#get(arglead)
-  return map(filter(copy(s:options),  'stridx(v:val, a:arglead) >= 0')
-        \ ,  '{"word" : v:val, "menu" : eval("&".v:val)}')
+  let prefix = matchstr(a:arglead, '^[gl]:')
+  let arglead = substitute(a:arglead, prefix, '', '')
+  return map(filter(copy(s:options),  'stridx(v:val, arglead) >= 0')
+        \ , '{"word" : prefix . v:val, "menu" : eval("&".prefix . v:val)}')
 endfunction
 
 
