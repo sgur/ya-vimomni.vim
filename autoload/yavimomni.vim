@@ -102,19 +102,28 @@ endfunction
 
 
 function! s:enable_module_from_pattern(line)
-  let _ = { 'ex_command' : 1
-        \ , 'feature' : 1
-        \ , 'function' : 1
-        \ , 'map_argument' : 1
-        \ , 'option' : 1
-        \ , 'script_variable' : 1
-        \ , 'user_command' : 1
-        \ , 'user_function' : 1
-        \ , 'variable' : 1
+  let _ = { 'ex_command' : 0
+        \ , 'feature' : 0
+        \ , 'function' : 0
+        \ , 'map_argument' : 0
+        \ , 'option' : 0
+        \ , 'script_variable' : 0
+        \ , 'user_command' : 0
+        \ , 'user_function' : 0
+        \ , 'variable' : 0
+        \ , 'colorscheme' : 0
         \ }
+
+  if a:line =~ 'colo\%[rscheme]\s\+$'
+    let _.colorscheme = 1
+    return _
+  else
+    let _.colorscheme = 0
+  endif
 
   if a:line =~ "has(['\"]"
     let _.feature = 1
+    return _
   else
     let _.feature = 0
   endif
@@ -143,6 +152,7 @@ function! s:enable_module_from_pattern(line)
   else
     let _.function = 1
   endif
+
   return _
 endfunction
 
