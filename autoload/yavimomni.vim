@@ -44,6 +44,8 @@ call yavimomni#option#init()
 call yavimomni#map_argument#init()
 " has()
 call yavimomni#feature#init()
+" colorscheme
+call yavimomni#colorscheme#init()
 
 
 function! yavimomni#complete(findstart, base)
