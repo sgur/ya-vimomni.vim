@@ -10,7 +10,7 @@ function! yavimomni#ex_command#init()
     let desc = ''
     for lnum in range(end, start, -1)
       let desc = substitute(lines[lnum], '^\s\+\ze', '', 'g') . ' ' . desc
-      let _ = matchlist(desc, '^|:\(.\+\)|\s\+\S\+\s\+\(.\+\)$')
+      let _ = matchlist(desc, '^|:\(.\{-}\)|\s\+\S\+\s\+\(.\+\)$')
       if !empty(_)
         call add(exs, {
               \ 'word' : _[1],
