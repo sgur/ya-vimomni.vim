@@ -61,9 +61,8 @@ function! yavimomni#complete(findstart, base)
     let matches_member = matchlist(sentence,  '\(\%(\k\+\.\)*\k\+\)\.\k*$')
     let matches_bracket = matchlist(sentence, '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*\]\?$')
     if !empty(matches_member) " member completion
-      return s:get_candidates_of_membeer(matches_member[1], a:base)
+      return s:get_candidates_of_member(matches_member[1], a:base)
     elseif !empty(matches_bracket) "bracket completion
-      echomsg 'ARGLEAD' a:base '/' matches_bracket[2]
       return s:get_candidates_of_bracket(matches_bracket[1], a:base)
     else " word completion
       return s:get_candidates_by_context(sentence, a:base)
@@ -101,7 +100,7 @@ function! s:get_candidates_by_context(line, arglead)
 endfunction
 
 
-function! s:get_candidates_of_membeer(receiver, arglead)
+function! s:get_candidates_of_member(receiver, arglead)
   if !exists(a:receiver)
     return []
   endif
