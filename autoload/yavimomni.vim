@@ -49,25 +49,31 @@ call yavimomni#colorscheme#init()
 
 
 function! yavimomni#complete(findstart, base)
-  if a:findstart " 1st time
-    let start = col('.') - 1
-    let line = getline('.')
-    while start > 0 && line[start-1] =~ '\k\|[<>]'
-      let start -= 1
-    endwhile
-    return start
-  else " 2nd time
-    let sentence = s:concat_lines('.', '.')
-    let matches_member = matchlist(sentence,  '\(\%(\k\+\.\)*\k\+\)\.\k*$')
-    let matches_bracket = matchlist(sentence, '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*\]\?$')
-    if !empty(matches_member) " member completion
-      return s:get_candidates_of_member(matches_member[1], a:base)
-    elseif !empty(matches_bracket) "bracket completion
-      return s:get_candidates_of_bracket(matches_bracket[1], a:base)
-    else " word completion
-      return s:get_candidates_by_context(sentence, a:base)
+  let isk = &isk
+  set isk+=#,:
+  try
+    if a:findstart " 1st time
+      let start = col('.') - 1
+      let line = getline('.')
+      while start > 0 && line[start-1] =~ '\k\|[<>]'
+        let start -= 1
+      endwhile
+      return start
+    else " 2nd time
+      let sentence = s:concat_lines('.', '.')
+      let matches_member = matchlist(sentence,  '\(\%(\k\+\.\)*\k\+\)\.\k*$')
+      let matches_bracket = matchlist(sentence, '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*\]\?$')
+      if !empty(matches_member) " member completion
+        return s:get_candidates_of_member(matches_member[1], a:base)
+      elseif !empty(matches_bracket) "bracket completion
+        return s:get_candidates_of_bracket(matches_bracket[1], a:base)
+      else " word completion
+        return s:get_candidates_by_context(sentence, a:base)
+      endif
     endif
-  endif
+  finally
+    let &isk = isk
+  endtry
 endfunction
 
 
@@ -93,6 +99,9 @@ endfunction
 
 function! s:get_candidates_by_context(line, arglead)
   let _ = []
+  if a:line !~ '\i\+'
+    return _
+  endif
   for c in s:enable_module_from_pattern(a:line)
     call extend(_, yavimomni#{c}#get(a:arglead))
   endfor
