@@ -99,7 +99,7 @@ endfunction
 
 function! s:get_candidates_by_context(line, arglead)
   let _ = []
-  if a:line !~ '\i\+'
+  if a:line !~ '\k\+' || a:line =~# '\.$'
     return _
   endif
   for c in s:enable_module_from_pattern(a:line)
