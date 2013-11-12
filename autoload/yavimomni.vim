@@ -60,7 +60,7 @@ function! yavimomni#complete(findstart, base)
       endwhile
       return start
     else " 2nd time
-      let sentence = s:concat_lines('.', '.')
+      let sentence = s:concat_lines('.')
       let matches_member = matchlist(sentence,  '\(\%(\k\+\.\)*\k\+\)\.\k*$')
       let matches_bracket = matchlist(sentence, '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*\]\?$')
       if !empty(matches_member) " member completion
@@ -78,14 +78,13 @@ endfunction
 
 
 function! yavimomni#candidates(base)
-  let sentence = s:concat_lines('.', '.')
+  let sentence = s:concat_lines('.')
   return s:get_candidates_by_context(sentence, a:base)
 endfunction
 
 
-function! s:concat_lines(line, col)
-  let lnum = (type(a:line) == type(0)) ? a:line : line(a:line)
-  let col  = (type(a:col) == type(0))  ? a:col  : col(a:col)
+function! s:concat_lines(pos)
+  let [_, lnum, col, _] = getpos(a:pos)
   let line = getline(lnum)[:col]
   let match = matchstr(line, '^\s*\\\zs.\+$')
   while match != '' && lnum > 1
