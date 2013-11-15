@@ -61,8 +61,7 @@ function! yavimomni#complete(findstart, base)
       endwhile
       return start
     else " 2nd time
-      let context = s:concat_lines('.')
-      " execute 'set titlestring=[DEBUG]context:' . escape(context, '| ') . '\ base:' . a:base
+      " execute 'set titlestring=[DEBUG]context:(' . escape(context, ' ') . ')\ base:(' . a:base . ')'
       if context =~ '^\s*"'
         return [] "Comment
       endif
@@ -95,13 +94,13 @@ function! s:concat_lines(pos)
     let line = getline(lnum) . substitute(line, '^\s*\\', '', '')
     let lnum -= 1
   endwhile
-  return line =~ '^\s*$' ? '' : split(line, '\%(\s\+\|\S\?\zs\s*|\|<bar>\)\s*')[-1]
+  return line =~ '^\s*$' ? '' : split(line, '\%(\S\?\zs\s*|\|<bar>\)\s*')[-1]
 endfunction
 
 
 function! s:get_candidates_by_context(line, arglead)
   let _ = []
-  if a:line !~ '\k\+' || a:line =~# '\.$'
+  if a:line =~# '\.$'
     return _
   endif
   for c in s:enable_module_from_pattern(a:line)
@@ -150,7 +149,7 @@ function! s:enable_module_from_pattern(line)
     return _
   endif
 
-  if a:line =~# '\<\%(se\%[tlocal]\s\+\|let\s\+&\%(\.:\)\?\)'
+  if a:line =~# '\<\%(se\%[tlocal]\s\+\|let\s\+&\)'
     call add(_, 'option')
     return _
   endif
@@ -160,22 +159,25 @@ function! s:enable_module_from_pattern(line)
     return _
   endif
 
-  if a:line =~ '\<\%(' . join([
+  if a:line =~# '\<\%(' . join([
         \ 's\?map', 'map!', '[nvxoilc]m\%(ap\)\?', 'no\%(remap\)\?',
         \ '\%(nn\|vn\|xn\)\%(oremap\)\?', 'snor\%(emap\)\?',
         \ '\%(ono\|no\|ino\)\%(remap\)\?', 'ln\%(oremap\)\?',
         \ 'cno\%(remap\)\?',
-        \ ], '\|') . '\)\>'
+        \ ], '\|') . '\)\>[^:]*$'
     call add(_, 'map_argument')
   endif
 
-  if a:line !~ '^\s*$'
-    call add(_, 'function')
+  if a:line =~# 'let\s\+[^=]*$'
+    call extend(_, ['variable', 'script_variable'])
   endif
 
-  call extend(_, ['ex_command', 'user_command'])
-  call extend(_, ['script_variable', 'variable'])
-  call extend(_, ['function', 'user_function'])
+  if a:line =~# 'let.\+=\|call\|if\|elseif\?\|wh\%[ile]\|for\|th\%[row]\|ec\%[ho]\|echo\%(n\|hl\?\|m\%[sg]\|e\%[rr]\)\|exe\%[cute]'
+    call extend(_, ['function', 'user_function'])
+    call extend(_, ['variable', 'script_variable'])
+  else
+    call extend(_, ['ex_command', 'user_command'])
+  endif
 
   return _
 endfunction

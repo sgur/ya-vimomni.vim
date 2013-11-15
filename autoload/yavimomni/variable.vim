@@ -16,7 +16,7 @@ function! yavimomni#variable#get(arglead)
     let explanation = s:get_explanation(var)
     call add(retval, {'word': var, 'menu' : explanation})
   endfor
-  return filter(copy(retval), 'stridx(v:val.word, a:arglead) >= 0')
+  return filter(copy(retval), 'stridx(v:val.word, a:arglead) == 0')
 endfunction
 
 

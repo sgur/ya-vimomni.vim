@@ -11,5 +11,5 @@ function! yavimomni#script_variable#get(arglead)
         \ 'substitute(v:val, "^", "s:", "")')
 
   return yavimomni#util#convert_list_candidates(
-      \ filter(copy(vars), 'stridx(v:val, a:arglead) >= 0'))
+      \ filter(copy(vars), 'stridx(v:val, a:arglead) == 0'))
 endfunction

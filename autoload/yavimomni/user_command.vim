@@ -10,7 +10,7 @@ function! yavimomni#user_command#get(arglead)
   endif
 
   return yavimomni#util#convert_list_candidates(
-      \ filter(copy(b:user_commands), 'stridx(v:val, a:arglead) >= 0'))
+      \ filter(copy(b:user_commands), 'stridx(v:val, a:arglead) == 0'))
 endfunction
 
 

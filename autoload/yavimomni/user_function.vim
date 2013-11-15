@@ -24,7 +24,7 @@ function! yavimomni#user_function#get(arglead)
   call filter(_, 'stridx(v:val, "<SNR>") == -1')
 
   return yavimomni#util#convert_list_candidates(
-      \ filter(_, 'stridx(v:val, a:arglead) >= 0'))
+      \ filter(_, 'stridx(v:val, a:arglead) == 0'))
 endfunction
 
 
