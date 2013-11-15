@@ -60,16 +60,18 @@ function! yavimomni#complete(findstart, base)
       endwhile
       return start
     else " 2nd time
-      let sentence = s:concat_lines('.')
-      let matches_member = matchlist(sentence,  '\(\%(\k\+\.\)*\k\+\)\.\k*$')
-      let matches_bracket = matchlist(sentence, '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*\]\?$')
-      if !empty(matches_member) " member completion
-        return s:get_candidates_of_member(matches_member[1], a:base)
-      elseif !empty(matches_bracket) "bracket completion
-        return s:get_candidates_of_bracket(matches_bracket[1], a:base)
-      else " word completion
-        return s:get_candidates_by_context(sentence, a:base)
+      let context = s:concat_lines('.')
+      execute 'set titlestring=[DEBUG]context:' . escape(context, ' ') . '\ base:' . a:base
+      if context =~ '^\s*"'
+        return [] "Comment
       endif
+      if context =~ '\(\%(\k\+\.\)*\k\+\)\.\k*$'
+        return s:get_candidates_of_member(context, a:base)
+      endif
+      if context =~ '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*'
+        return s:get_candidates_of_bracket(context, a:base)
+      endif
+      return s:get_candidates_by_context(context, a:base)
     endif
   finally
     let &isk = isk
@@ -78,21 +80,20 @@ endfunction
 
 
 function! yavimomni#candidates(base)
-  let sentence = s:concat_lines('.')
-  return s:get_candidates_by_context(sentence, a:base)
+  let context = s:concat_lines('.')
+  return s:get_candidates_by_context(context, a:base)
 endfunction
 
 
 function! s:concat_lines(pos)
   let [_, lnum, col, _] = getpos(a:pos)
+
   let line = getline(lnum)[:col]
-  let match = matchstr(line, '^\s*\\\zs.\+$')
-  while match != '' && lnum > 1
+  while line =~ '^\s*\\' && lnum > 0
+    let line = getline(lnum) . substitute(line, '^\s*\\', '', '')
     let lnum -= 1
-    let line = getline(lnum) . match
-    let match = matchstr(line, '^\s*\\\zs.\+$')
   endwhile
-  return line
+  return line =~ '^\s*$' ? '' : split(line, '\%(\s\+\|\S\?\zs\s*|\|<bar>\)\s*')[-1]
 endfunction
 
 
@@ -109,26 +110,28 @@ endfunction
 
 
 function! s:get_candidates_of_member(receiver, arglead)
-  if !exists(a:receiver)
+  let var = substitute(a:receiver, '\.\s*$', '', '')
+  if !exists(var)  " assumed that a:receiver is a variable
     return []
   endif
-  let recv = eval(a:receiver)
+  let recv = eval(var)
   if type(recv) != type({})
     return []
   endif
-  return map(keys(recv), '{"word" : v:val , "menu" : string(eval(a:receiver . "[\"" . v:val . "\"]"))}')
+  return map(keys(recv), '{"word" : v:val , "menu" : string(eval(var . "[\"" . v:val . "\"]"))}')
 endfunction
 
 
 function! s:get_candidates_of_bracket(receiver, arglead)
-  if !exists(a:receiver)
+  let var = substitute(a:receiver, '[[\]]\+\s*$', '', '')
+  if !exists(var)  " assumed that a:receiver is a variable
     return []
   endif
-  let recv = eval(a:receiver)
+  let recv = eval(var)
   if type(recv) != type({})
     return []
   endif
-  return map(keys(recv), '{"word" : "''" . v:val . "'']", "menu" : string(eval(a:receiver . "[\"" . v:val . "\"]"))}')
+  return map(keys(recv), '{"word" : "''" . v:val . "''", "menu" : string(eval(var . "[\"" . v:val . "\"]"))}')
 endfunction
 
 
