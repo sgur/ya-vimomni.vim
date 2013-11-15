@@ -42,6 +42,7 @@ call yavimomni#user_function#init()
 call yavimomni#option#init()
 " After :map
 call yavimomni#map_argument#init()
+call yavimomni#specials#init()
 " has()
 call yavimomni#feature#init()
 " colorscheme
@@ -61,7 +62,7 @@ function! yavimomni#complete(findstart, base)
       return start
     else " 2nd time
       let context = s:concat_lines('.')
-      execute 'set titlestring=[DEBUG]context:' . escape(context, ' ') . '\ base:' . a:base
+      " execute 'set titlestring=[DEBUG]context:' . escape(context, '| ') . '\ base:' . a:base
       if context =~ '^\s*"'
         return [] "Comment
       endif
@@ -86,9 +87,10 @@ endfunction
 
 
 function! s:concat_lines(pos)
-  let [_, lnum, col, _] = getpos(a:pos)
+  let lnum = line(a:pos)
+  let col = col(a:pos)
 
-  let line = getline(lnum)[:col]
+  let line = getline(lnum)
   while line =~ '^\s*\\' && lnum > 0
     let line = getline(lnum) . substitute(line, '^\s*\\', '', '')
     let lnum -= 1
@@ -143,13 +145,18 @@ function! s:enable_module_from_pattern(line)
     return _
   endif
 
-  if a:line =~ "has(['\"]"
+  if a:line =~# '\<has([''"]\w*\%([''"])\)\?$'
     call add(_, 'feature')
     return _
   endif
 
-  if a:line =~ '\<\%(se\%[tlocal]\s\+\|let\s\+&\%(\.:\)\?\)'
+  if a:line =~# '\<\%(se\%[tlocal]\s\+\|let\s\+&\%(\.:\)\?\)'
     call add(_, 'option')
+    return _
+  endif
+
+  if a:line =~# '\<expand([''"][<>[:alnum:]]*\%([''"])\)\?$'
+    call add(_, 'specials')
     return _
   endif
 
