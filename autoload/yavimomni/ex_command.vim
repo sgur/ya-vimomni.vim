@@ -22,7 +22,6 @@ function! yavimomni#ex_command#init()
     endfor
     let s:ex_commands = exs
   endif
-  echomsg 'Ex commands' len(s:ex_commands)
 endfunction
 
 

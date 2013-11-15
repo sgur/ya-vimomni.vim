@@ -5,7 +5,6 @@ function! yavimomni#variable#init()
   let global_vars = map(keys(g:), 'substitute(v:val, "^", "g:", "g")')
   let vim_vars = map(keys(v:), 'substitute(v:val, "^", "v:", "g")')
   let s:variables = global_vars + vim_vars
-  echomsg 'Variables' len(s:variables)
 endfunction
 
 

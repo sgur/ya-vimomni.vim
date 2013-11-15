@@ -37,7 +37,6 @@ function! yavimomni#option#init()
         \ '!empty(v:val) && exists("&".v:val)'),
         \ 'substitute(v:val, "^no", "", "")')
   let s:options = options
-  echomsg 'Options' len(s:options)
 endfunction
 
 

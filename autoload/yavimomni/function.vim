@@ -24,7 +24,6 @@ function! yavimomni#function#init()
   else
     echoerr 'yavimomni: vim help file not readable.'
   endif
-  echomsg "Builtin functions" len(s:builtin_functions)
 endfunction
 
 

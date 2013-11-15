@@ -19,7 +19,6 @@ function! yavimomni#feature#init()
     endfor
     let s:features = features
   endif
-  echomsg "Features" len(s:features)
 endfunction
 
 
