@@ -61,7 +61,8 @@ function! yavimomni#complete(findstart, base)
       endwhile
       return start
     else " 2nd time
-      " execute 'set titlestring=[DEBUG]context:(' . escape(context, ' ') . ')\ base:(' . a:base . ')'
+      let context = s:concat_lines('.')
+      " let &titlestring = '[DEBUG]context:(' . context . ') base:(' . a:base . ')'
       if context =~ '^\s*"'
         return [] "Comment
       endif
@@ -111,7 +112,7 @@ endfunction
 
 
 function! s:get_candidates_of_member(receiver, arglead)
-  let var = substitute(a:receiver, '\.\s*$', '', '')
+  let var = matchstr(a:receiver, '\S\+\ze\.')
   if !exists(var)  " assumed that a:receiver is a variable
     return []
   endif
@@ -124,7 +125,7 @@ endfunction
 
 
 function! s:get_candidates_of_bracket(receiver, arglead)
-  let var = substitute(a:receiver, '[[\]]\+\s*$', '', '')
+  let var = matchstr(a:receiver, '\S\+\ze\[')
   if !exists(var)  " assumed that a:receiver is a variable
     return []
   endif
