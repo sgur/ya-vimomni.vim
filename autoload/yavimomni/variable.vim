@@ -13,23 +13,37 @@ function! yavimomni#variable#get(arglead)
   let buf_vars = map(keys(b:), 'substitute(v:val, "^", "b:", "g")')
   let retval = []
   for var in s:variables + win_vars + buf_vars
-    let explanation = s:get_explanation(var)
-    call add(retval, {'word': var, 'menu' : explanation})
+    let Explanation = s:get_explanation(var)
+    call add(retval, s:map_func(var, Explanation))
+    unlet Explanation
   endfor
   return filter(copy(retval), 'stridx(v:val.word, a:arglead) == 0')
+endfunction
+
+
+
+function! s:map_func(var, val)
+  let val = string(a:val)
+  if type(a:val) == type([])
+    return {'word': a:var, 'menu' : '[...]', 'info' : val}
+  elseif type(a:val) == type({})
+    return {'word': a:var, 'menu' : '{...}', 'info' : val}
+  else
+    return {'word': a:var, 'menu' : val}
+  endif
 endfunction
 
 
 function! s:get_explanation(var_name)
   try
     if a:var_name =~# '^g:'
-      return string(get(g:, substitute(a:var_name, '^g:', '', '')))
+      return get(g:, substitute(a:var_name, '^g:', '', ''))
     elseif a:var_name =~# '^v:'
-      return string(get(v:, substitute(a:var_name, '^v:', '', '')))
+      return get(v:, substitute(a:var_name, '^v:', '', ''))
     elseif a:var_name =~# '^w:'
-      return string(get(w:, substitute(a:var_name, '^w:', '', '')))
+      return get(w:, substitute(a:var_name, '^w:', '', ''))
     elseif a:var_name =~# '^b:'
-      return string(get(b:, substitute(a:var_name, '^b:', '', '')))
+      return get(b:, substitute(a:var_name, '^b:', '', ''))
     else
       return ''
     endif
