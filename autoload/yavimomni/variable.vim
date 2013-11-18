@@ -37,3 +37,8 @@ function! s:get_explanation(var_name)
     return '... (Circular references)'
   endtry
 endfunction
+
+
+" Initialization
+
+call yavimomni#variable#init()

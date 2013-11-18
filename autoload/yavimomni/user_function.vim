@@ -37,3 +37,8 @@ function! s:scriptnames()
         \ 'extend(_, {fnamemodify(v:val[1], ":p") : eval(v:val[0])})')
   return _
 endfunction
+
+
+" Initialization
+
+call yavimomni#user_function#init()

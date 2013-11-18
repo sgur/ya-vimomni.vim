@@ -20,3 +20,8 @@ function! s:init()
   redir END
   return map(split(commands, '\r\n\|\n\|\r')[1:],'matchstr(v:val, "\\i\\+\\ze\\s", 3)')
 endfunction
+
+
+" Initialization
+
+call yavimomni#user_command#init()
