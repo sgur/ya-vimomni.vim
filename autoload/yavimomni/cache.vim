@@ -1,5 +1,5 @@
 "=============================================================================
-" FILE: autoload/yavimomni/option.vim
+" FILE: cache.vim
 " AUTHOR: sgur <sgurrr+vim@gmail.com>
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
@@ -26,32 +26,49 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-" Options
 
-function! yavimomni#option#init()
-  if yavimomni#cache#exists('option')
-    let s:options = yavimomni#cache#load('option')
-  else
-    redir => raw
-    silent set all
-    redir END
-    let options = map(filter(
-          \ map(split(raw, '\s\{2,}\|\n')[1:], 'split(v:val, "=", 1)[0]'),
-          \ '!empty(v:val) && exists("&".v:val)'),
-          \ 'substitute(v:val, "^no", "", "")')
-    let s:options = options
-    call yavimomni#cache#store('option', options)
+" Interface
+
+" function! yavimomni#cache#exists(kind, orig_filename)
+function! yavimomni#cache#exists(kind, ...)
+  let cache = s:cache_filename(a:kind)
+  if !filereadable(cache)
+    return 0
   endif
+  if a:0 > 0
+    return filereadable(a:1) && getftime(s:cache_filename(a:kind)) > getftime(a:1)
+  else
+    return localtime() - getftime(s:cache_filename(a:kind)) < s:expire_seconds
+  else
 endfunction
 
-
-function! yavimomni#option#get(arglead)
-  let prefix = matchstr(a:arglead, '^[gl]:')
-  let arglead = substitute(a:arglead, prefix, '', '')
-  return map(filter(copy(s:options),  'stridx(v:val, arglead) == 0')
-        \ , '{"word" : prefix . v:val, "menu" : eval("&".prefix . v:val)}')
+function! yavimomni#cache#store(kind, candidates)
+  echomsg 'Create cache' a:kind
+  call writefile([string(a:candidates)], s:cache_filename(a:kind))
 endfunction
+
+function! yavimomni#cache#load(kind)
+  let lines = readfile(s:cache_filename(a:kind))
+  return len(lines) > 0 ? eval(lines[0]) : []
+endfunction
+
+function! s:cache_filename(kind)
+  return expand(s:cache_directory . '/' . a:kind . '.vimson')
+endfunction
+
+" Internal
+
+let s:expire_seconds = 60 * 60 * 24 * 7 " 1week
+
+let s:cache_directory = expand('~/.cache/yavimomni')
+
+" Initialization
+
+if !isdirectory(s:cache_directory)
+  call mkdir(s:cache_directory, 'p')
+endif
 
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
+
