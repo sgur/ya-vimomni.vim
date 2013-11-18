@@ -53,5 +53,9 @@ function! yavimomni#option#get(arglead)
 endfunction
 
 
+" Initialization
+
+call yavimomni#option#init()
+
 let &cpo = s:save_cpo
 unlet s:save_cpo

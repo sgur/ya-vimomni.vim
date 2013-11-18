@@ -7,3 +7,8 @@ endfunction
 function! yavimomni#map_argument#get(arglead)
   return s:mapargments
 endfunction
+
+
+" Initialization
+
+call yavimomni#map_argument#init()

@@ -27,28 +27,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-" The Other
-call yavimomni#ex_command#init()
-call yavimomni#user_command#init()
-" Just after :lockvar, :unlockvar, :let :unlet
-" After :if, :while :for
-call yavimomni#variable#init()
-call yavimomni#script_variable#init()
-" After :call, :return, :let {var}=
-" Parameters
-call yavimomni#function#init()
-call yavimomni#user_function#init()
-" After :set, :let &{var}=
-call yavimomni#option#init()
-" After :map
-call yavimomni#map_argument#init()
-call yavimomni#specials#init()
-" has()
-call yavimomni#feature#init()
-" colorscheme
-call yavimomni#colorscheme#init()
-
-
 function! yavimomni#complete(findstart, base)
   let isk = &isk
   set isk+=#,:

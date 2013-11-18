@@ -35,3 +35,8 @@ endfunction
 function! yavimomni#function#get(arglead)
   return filter(copy(s:builtin_functions), 'stridx(v:val.word, a:arglead) == 0')
 endfunction
+
+
+" Initialization
+
+call yavimomni#function#init()
