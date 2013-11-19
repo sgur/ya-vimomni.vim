@@ -5,13 +5,12 @@ endfunction
 
 
 function! yavimomni#script_variable#get(arglead)
-  let vars =  map(filter(map(getline(1, '$'),
+  let _ = map(filter(map(getline(1, '$'),
         \ 'matchstr(v:val, "let\\s\\+s:\\zs\\k\\+\\ze\\s*=")'),
         \ '!empty(v:val)'),
-        \ 'substitute(v:val, "^", "s:", "")')
+        \ '{"word": substitute(v:val, "^", "s:", ""), "menu": "[variable]"}')
 
-  return yavimomni#util#convert_list_candidates(
-      \ filter(copy(vars), 'stridx(v:val, a:arglead) == 0'))
+  return filter(_, 'stridx(v:val.word, a:arglead) == 0')
 endfunction
 
 

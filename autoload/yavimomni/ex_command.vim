@@ -17,7 +17,8 @@ function! yavimomni#ex_command#init()
         if !empty(_)
           call add(exs, {
                 \ 'word' : _[1],
-                \ 'menu' : _[2],
+                \ 'menu' : '[command]',
+                \ 'info' : _[2],
                 \ })
           " \ 'info' : _[1] . "\n" . _[2]
           let desc = ''

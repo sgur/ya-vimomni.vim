@@ -17,7 +17,7 @@ function! yavimomni#function#init()
         if !empty(_)
           call insert(functions, {
                 \ 'word' : _[2],
-                \ 'menu' : _[1],
+                \ 'menu' : '[function]',
                 \ 'info' : _[1] . "\n" . _[4]
                 \ })
           let desc = ''

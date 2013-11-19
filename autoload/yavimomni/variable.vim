@@ -25,11 +25,11 @@ endfunction
 function! s:map_func(var, val)
   let val = string(a:val)
   if type(a:val) == type([])
-    return {'word': a:var, 'menu' : '[...]', 'info' : val}
+    return {'word': a:var, 'menu' : '[variable][...]', 'info' : val}
   elseif type(a:val) == type({})
-    return {'word': a:var, 'menu' : '{...}', 'info' : val}
+    return {'word': a:var, 'menu' : '[variable]{...}', 'info' : val}
   else
-    return {'word': a:var, 'menu' : val}
+    return {'word': a:var, 'menu' : '[variable]', 'info': val}
   endif
 endfunction
 

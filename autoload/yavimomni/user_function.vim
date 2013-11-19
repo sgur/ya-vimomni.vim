@@ -1,18 +1,19 @@
 " User-define functions
 
 function! yavimomni#user_function#init()
+  echomsg strftime("%c") 'Intialize user_function'
   let s:scriptnames = s:scriptnames()
   redir => functions
   silent function
   redir END
   let s:functions = map(split(functions, '\n'),
         \ 'matchstr(v:val, "function\\s\\zs.\\+(")')
+  let s:initialized = 1
 endfunction
 
 
 function! yavimomni#user_function#get(arglead)
-  let scriptnames = s:scriptnames()
-  if len(scriptnames) > len(s:scriptnames)
+  if !s:initialized
     call yavimomni#user_function#init()
   endif
   let fname = fnamemodify(expand("%"), ":p")
@@ -23,8 +24,8 @@ function! yavimomni#user_function#get(arglead)
   endif
   call filter(_, 'stridx(v:val, "<SNR>") == -1')
 
-  return yavimomni#util#convert_list_candidates(
-      \ filter(_, 'stridx(v:val, a:arglead) == 0'))
+  return map(filter(_, 'stridx(v:val, a:arglead) == 0'),
+        \ '{"word": v:val, "menu": "[function]"}')
 endfunction
 
 
@@ -40,5 +41,11 @@ endfunction
 
 
 " Initialization
+let s:initialized = 0
 
 call yavimomni#user_function#init()
+
+augroup yavimomni_sourcepre_user_command
+  autocmd!
+  autocmd SourcePre *  let s:Initialized = 0
+augroup END
