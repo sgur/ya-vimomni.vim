@@ -14,8 +14,9 @@ function! yavimomni#feature#init()
         let _ = matchlist(l, '^\(\k\+\)\t\+\(.\+\)$')
         if !empty(_)
           call add(features, {
-                \ 'word' : _[1],
-                \ 'menu' : _[2],
+                \ 'word': _[1],
+                \ 'menu': '[feature]'
+                \ 'info': _[2],
                 \ })
           " \ 'info' : _[2],
         endif
@@ -30,7 +31,7 @@ endfunction
 
 
 function! yavimomni#feature#get(arglead)
-  return filter(copy(s:features), 'stridx(v:val.word, a:arglead) == 0')
+  return copy(s:features)
 endfunction
 
 

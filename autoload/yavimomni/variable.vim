@@ -17,7 +17,7 @@ function! yavimomni#variable#get(arglead)
     call add(retval, s:map_func(var, Explanation))
     unlet Explanation
   endfor
-  return filter(copy(retval), 'stridx(v:val.word, a:arglead) == 0')
+  return copy(retval)
 endfunction
 
 
@@ -25,11 +25,11 @@ endfunction
 function! s:map_func(var, val)
   let val = string(a:val)
   if type(a:val) == type([])
-    return {'word': a:var, 'menu' : '[...]', 'info' : val}
+    return {'word': a:var, 'menu' : '[variable][...]', 'info' : val}
   elseif type(a:val) == type({})
-    return {'word': a:var, 'menu' : '{...}', 'info' : val}
+    return {'word': a:var, 'menu' : '[variable]{...}', 'info' : val}
   else
-    return {'word': a:var, 'menu' : val}
+    return {'word': a:var, 'menu' : '[variable]', 'info': val}
   endif
 endfunction
 

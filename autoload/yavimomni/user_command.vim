@@ -9,8 +9,7 @@ function! yavimomni#user_command#get(arglead)
     let b:user_commands = s:init()
   endif
 
-  return yavimomni#util#convert_list_candidates(
-      \ filter(copy(b:user_commands), 'stridx(v:val, a:arglead) == 0'))
+  return copy(b:user_commands)
 endfunction
 
 
@@ -18,7 +17,8 @@ function! s:init()
   redir => commands
   silent command
   redir END
-  return map(split(commands, '\r\n\|\n\|\r')[1:],'matchstr(v:val, "\\i\\+\\ze\\s", 3)')
+  return map(split(commands, '\r\n\|\n\|\r')[1:],
+        \ '{"word": matchstr(v:val, "\\i\\+\\ze\\s", 3), "menu": "[command]"}')
 endfunction
 
 

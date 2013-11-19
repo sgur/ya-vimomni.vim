@@ -85,7 +85,7 @@ function! s:get_candidates_by_context(line, arglead)
   for c in s:enable_module_from_pattern(a:line)
     call extend(_, yavimomni#{c}#get(a:arglead))
   endfor
-  return _
+  return sort(filter(_, 'stridx(v:val.word, a:arglead) == 0'), 1)[:&lines]
 endfunction
 
 
