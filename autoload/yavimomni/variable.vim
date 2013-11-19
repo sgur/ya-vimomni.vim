@@ -17,7 +17,7 @@ function! yavimomni#variable#get(arglead)
     call add(retval, s:map_func(var, Explanation))
     unlet Explanation
   endfor
-  return filter(copy(retval), 'stridx(v:val.word, a:arglead) == 0')
+  return copy(retval)
 endfunction
 
 

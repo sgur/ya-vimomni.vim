@@ -1,13 +1,12 @@
 " User-define functions
 
 function! yavimomni#user_function#init()
-  echomsg strftime("%c") 'Intialize user_function'
   let s:scriptnames = s:scriptnames()
   redir => functions
   silent function
   redir END
   let s:functions = map(split(functions, '\n'),
-        \ 'matchstr(v:val, "function\\s\\zs.\\+(")')
+        \ 'matchstr(v:val, "function\\s\\zs.\\+\\ze(")')
   let s:initialized = 1
 endfunction
 
@@ -24,8 +23,7 @@ function! yavimomni#user_function#get(arglead)
   endif
   call filter(_, 'stridx(v:val, "<SNR>") == -1')
 
-  return map(filter(_, 'stridx(v:val, a:arglead) == 0'),
-        \ '{"word": v:val, "menu": "[function]"}')
+  return map(_, '{"word": v:val, "abbr": v:val . "()", "menu": "[function]"}')
 endfunction
 
 

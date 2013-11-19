@@ -9,7 +9,7 @@ function! yavimomni#user_command#get(arglead)
     let b:user_commands = s:init()
   endif
 
-  return filter(copy(b:user_commands), 'stridx(v:val.word, a:arglead) == 0')
+  return copy(b:user_commands)
 endfunction
 
 

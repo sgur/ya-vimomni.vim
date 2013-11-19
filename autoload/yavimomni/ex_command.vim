@@ -34,7 +34,7 @@ endfunction
 
 
 function! yavimomni#ex_command#get(arglead)
-  return filter(copy(s:ex_commands), 'stridx(v:val.word, a:arglead) == 0')
+  return copy(s:ex_commands)
 endfunction
 
 

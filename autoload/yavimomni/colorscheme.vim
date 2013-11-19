@@ -8,7 +8,7 @@ endfunction
 
 
 function! yavimomni#colorscheme#get(arglead)
-  return filter(copy(s:colorscheme), 'stridx(v:val.word, a:arglead) == 0')
+  return copy(s:colorscheme)
 endfunction
 
 
