@@ -87,7 +87,7 @@ function! s:get_candidates_by_context(line, arglead)
   for kind in s:enable_module_from_pattern(line)
     call extend(_, yavimomni#{kind}#get(a:arglead))
   endfor
-  let &titlestring.='['.term.' '.join(s:enable_module_from_pattern(line), ',').']'
+  " let &titlestring.='['.term.' '.join(s:enable_module_from_pattern(line), ',').']'
   call filter(_, 'stridx(v:val["word"], term) == 0')
   if a:arglead != term
     for cand in _
