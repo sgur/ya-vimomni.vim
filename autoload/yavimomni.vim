@@ -82,10 +82,20 @@ function! s:get_candidates_by_context(line, arglead)
   if a:line =~# '\.$'
     return _
   endif
-  for c in s:enable_module_from_pattern(a:line)
-    call extend(_, yavimomni#{c}#get(a:arglead))
+  let line = a:line . a:arglead
+  let term = matchstr(line, '\k\+$')
+  for kind in s:enable_module_from_pattern(line)
+    call extend(_, yavimomni#{kind}#get(a:arglead))
   endfor
-  return sort(filter(_, 'stridx(v:val.word, a:arglead) == 0'), 1)[:&lines]
+  let &titlestring.='['.term.' '.join(s:enable_module_from_pattern(line), ',').']'
+  call filter(_, 'stridx(v:val["word"], term) == 0')
+  if a:arglead != term
+    for cand in _
+      let cand["word"] = substitute(cand["word"], term, '', '')
+      let cand["abbr"] = cand["word"]
+    endfor
+  endif
+  return sort(_, 1)[:&lines]
 endfunction
 
 
@@ -147,7 +157,7 @@ function! s:enable_module_from_pattern(line)
     call add(_, 'map_argument')
   endif
 
-  if a:line =~# 'let\s\+[^=]*$'
+  if a:line =~# 'let[^=]\+$'
     call extend(_, ['variable', 'script_variable'])
   endif
 
