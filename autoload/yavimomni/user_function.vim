@@ -2,18 +2,15 @@
 
 function! yavimomni#user_function#init()
   let s:scriptnames = s:scriptnames()
-  redir => functions
-  silent function
-  redir END
-  let s:functions = map(split(functions, '\n'),
-        \ 'matchstr(v:val, "function\\s\\zs.\\+\\ze(")')
-  let s:initialized = 1
+  let s:functions = s:functions()
 endfunction
 
 
 function! yavimomni#user_function#get(arglead)
-  if !s:initialized
-    call yavimomni#user_function#init()
+  let scriptnames = s:scriptnames()
+  if len(scriptnames) > len(s:scriptnames)
+    let s:scriptnames = scriptnames
+    let s:functions = s:functions()
   endif
   let fname = fnamemodify(expand("%"), ":p")
   let _ = copy(s:functions)
@@ -24,6 +21,16 @@ function! yavimomni#user_function#get(arglead)
   call filter(_, 'stridx(v:val, "<SNR>") == -1')
 
   return map(_, '{"word": v:val, "abbr": v:val . "()", "menu": "[function]"}')
+endfunction
+
+
+
+function s:functions()
+  redir => functions
+  silent function
+  redir END
+  return map(split(functions, '\n'),
+        \ 'matchstr(v:val, "function\\s\\zs.\\+\\ze(")')
 endfunction
 
 
@@ -38,12 +45,4 @@ function! s:scriptnames()
 endfunction
 
 
-" Initialization
-let s:initialized = 0
-
 call yavimomni#user_function#init()
-
-augroup yavimomni_sourcepre_user_command
-  autocmd!
-  autocmd SourcePre *  let s:Initialized = 0
-augroup END
