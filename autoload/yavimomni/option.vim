@@ -35,15 +35,15 @@ function! yavimomni#option#init()
     redir => raw
     silent set all
     redir END
-    let options = map(filter(
-          \ map(split(raw, '\s\{2,}\|\n')[1:], 'split(v:val, "=", 1)[0]'),
-          \ '!empty(v:val) && exists("&".v:val)'),
-          \ 'substitute(v:val, "^no", "", "")')
+    let options = filter(map(map(
+          \ split(raw, '\s\{2,}\|\n')[1:],
+          \ 'substitute(v:val, "\\s*=.*$", "", "")'),
+          \ 'substitute(v:val, "^no", "", "")'),
+          \ '!empty(v:val) && exists("&".v:val)')
     let s:options = options
     call yavimomni#cache#store('option', options)
   endif
 endfunction
-
 
 function! yavimomni#option#get(arglead)
   let prefix = matchstr(a:arglead, '^[gl]:')

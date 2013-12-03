@@ -7,6 +7,18 @@ endfunction
 
 
 function! yavimomni#user_function#get(arglead)
+  if g:yavimomni_enable_autoload_functions &&
+        \ match(s:functions, '^' . a:arglead) == -1
+    let path = substitute(a:arglead, '.*\zs#$', '', '')
+    try
+      execute 'runtime autoload/' . substitute(path, '#', '/', 'g') . '.vim'
+    catch /^Vim\%((\a\+)\)\=:E121/
+    catch /^Vim\%((\a\+)\)\=:E122/
+      echomsg v:exception
+    finally
+    endtry
+  endif
+
   let scriptnames = s:scriptnames()
   if len(scriptnames) > len(s:scriptnames)
     let s:scriptnames = scriptnames
@@ -24,8 +36,7 @@ function! yavimomni#user_function#get(arglead)
 endfunction
 
 
-
-function s:functions()
+function! s:functions()
   redir => functions
   silent function
   redir END
@@ -39,8 +50,9 @@ function! s:scriptnames()
   silent scriptnames
   redir END
   let _ = {}
-  call map(map(split(scriptnames, '\n'), 'split(v:val, ": ")'),
-        \ 'extend(_, {fnamemodify(v:val[1], ":p") : eval(v:val[0])})')
+  for scr in map(split(scriptnames, '\n'), 'split(v:val, ": ")')
+    call extend(_, {fnamemodify(scr[1], ":p") : eval(scr[0])})
+  endfor
   return _
 endfunction
 

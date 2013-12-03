@@ -25,3 +25,5 @@
 
 
 setlocal omnifunc=yavimomni#complete
+
+let g:yavimomni_enable_autoload_functions = get(g:, 'yavimomni_enable_autoload_functions', 0)

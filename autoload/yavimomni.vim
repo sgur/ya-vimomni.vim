@@ -85,7 +85,7 @@ function! s:get_candidates_by_context(line, arglead)
   let line = a:line . a:arglead
   let term = matchstr(line, '\k\+$')
   for kind in s:enable_module_from_pattern(line)
-    call extend(_, yavimomni#{kind}#get(a:arglead))
+    call extend(_, yavimomni#{kind}#get(term))
   endfor
   " let &titlestring.='['.term.' '.join(s:enable_module_from_pattern(line), ',').']'
   call filter(_, 'stridx(v:val["word"], term) == 0')
