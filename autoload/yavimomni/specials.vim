@@ -2,7 +2,7 @@
 
 function! yavimomni#specials#init()
   let s:mapargments = map(['<cfile>', '<afile>', '<abuf>', '<amatch>', '<sfile>', '<cword>', '<cWORD>', '<client>'],
-        \ '{"word": v:val, "menu": "[special]"}')
+        \ '{"word": v:val, "menu": "[S]"}')
 endfunction
 
 function! yavimomni#specials#get(arglead)

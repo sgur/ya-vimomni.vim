@@ -32,7 +32,7 @@ function! yavimomni#user_function#get(arglead)
   endif
   call filter(_, 'stridx(v:val, "<SNR>") == -1')
 
-  return map(_, '{"word": v:val, "abbr": v:val . "()", "menu": "[function]"}')
+  return map(_, '{"word": v:val, "abbr": v:val . "()", "menu": "[F]"}')
 endfunction
 
 

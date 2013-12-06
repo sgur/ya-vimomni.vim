@@ -3,7 +3,7 @@
 function! yavimomni#colorscheme#init()
   let colorscheme = split(globpath(&runtimepath, 'colors/*.vim'), '\n')
   let s:colorscheme = map(colorscheme
-        \ , '{"word": fnamemodify(v:val, ":t:r"), "menu": "[colorscheme]", "info": fnamemodify(v:val, ":.")}')
+        \ , '{"word": fnamemodify(v:val, ":t:r"), "menu": "[c] " . yavimomni#util#truncate(fnamemodify(v:val, ":."), yavimomni#util#truncate_length())}')
 endfunction
 
 

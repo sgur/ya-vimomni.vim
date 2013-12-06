@@ -18,7 +18,7 @@ function! s:init()
   silent command
   redir END
   return map(split(commands, '\r\n\|\n\|\r')[1:],
-        \ '{"word": matchstr(v:val, "\\i\\+\\ze\\s", 3), "menu": "[command]"}')
+        \ '{"word": matchstr(v:val, "\\i\\+\\ze\\s", 3), "menu": "[C]"}')
 endfunction
 
 

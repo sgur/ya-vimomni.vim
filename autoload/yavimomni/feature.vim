@@ -15,10 +15,8 @@ function! yavimomni#feature#init()
         if !empty(_)
           call add(features, {
                 \ 'word': _[1],
-                \ 'menu': '[feature]'
-                \ 'info': _[2],
+                \ 'menu': '[+] ' . yavimomni#util#truncate(_[2], yavimomni#util#truncate_length())
                 \ })
-          " \ 'info' : _[2],
         endif
       endfor
       let s:features = features

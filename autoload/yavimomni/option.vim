@@ -48,7 +48,10 @@ endfunction
 function! yavimomni#option#get(arglead)
   let prefix = matchstr(a:arglead, '^[gl]:')
   let arglead = substitute(a:arglead, prefix, '', '')
-  return map(copy(s:options), '{"word": prefix . v:val, "menu": "[option]", "info": eval("&".prefix . v:val)}')
+  return map(copy(s:options), '
+        \ { "word": prefix . v:val
+        \ , "menu": "[O]" . yavimomni#util#truncate(eval("&".prefix . v:val), yavimomni#util#truncate_length())
+        \ }')
 endfunction
 
 

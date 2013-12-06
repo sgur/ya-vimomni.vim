@@ -2,7 +2,7 @@
 
 function! yavimomni#map_argument#init()
   let s:mapargments = map(['<buffer>', '<silent>', '<special>', '<script>', '<expr>', '<unique>'],
-        \ '{"word": v:val, "menu": "[map-argument]"}')
+        \ '{"word": v:val, "menu": "[M]"}')
 endfunction
 
 function! yavimomni#map_argument#get(arglead)

@@ -18,8 +18,7 @@ function! yavimomni#function#init()
           call insert(functions, {
                 \ 'word' : _[2],
                 \ 'abbr' : _[2] . '()',
-                \ 'menu' : '[function]',
-                \ 'info' : _[1] . "\n" . _[4]
+                \ 'menu' : '[F] ' . yavimomni#util#truncate(_[1] . ' ' . _[4], yavimomni#util#truncate_length())
                 \ })
           let desc = ''
         endif
