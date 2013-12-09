@@ -45,10 +45,10 @@ function! yavimomni#complete(findstart, base)
         return [] "Comment
       endif
       if context =~ '\(\%(\k\+\.\)*\k\+\)\.\k*$'
-        return s:get_candidates_of_member(context, a:base)
+        return s:get_candidates_of_member(context)
       endif
       if context =~ '\(\%(\k\+\.\)*\k\+\%(\[\k\+\]\)*\)\[\k*'
-        return s:get_candidates_of_bracket(context, a:base)
+        return s:get_candidates_of_bracket(context)
       endif
       return s:get_candidates_by_context(context, a:base)
     endif
@@ -66,7 +66,6 @@ endfunction
 
 function! s:concat_lines(pos)
   let lnum = line(a:pos)
-  let col = col(a:pos)
 
   let line = getline(lnum)
   while line =~ '^\s*\\' && lnum > 0
@@ -99,7 +98,7 @@ function! s:get_candidates_by_context(line, arglead)
 endfunction
 
 
-function! s:get_candidates_of_member(receiver, arglead)
+function! s:get_candidates_of_member(receiver)
   let var = matchstr(a:receiver, '\S\+\ze\.')
   if !exists(var)  " assumed that a:receiver is a variable
     return []
@@ -112,7 +111,7 @@ function! s:get_candidates_of_member(receiver, arglead)
 endfunction
 
 
-function! s:get_candidates_of_bracket(receiver, arglead)
+function! s:get_candidates_of_bracket(receiver)
   let var = matchstr(a:receiver, '\S\+\ze\[')
   if !exists(var)  " assumed that a:receiver is a variable
     return []
