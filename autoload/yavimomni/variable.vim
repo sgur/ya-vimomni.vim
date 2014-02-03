@@ -15,7 +15,8 @@ function! yavimomni#variable#get(arglead)
   for var in s:variables + global_vars + win_vars + buf_vars
     let expl = string(s:get_explanation(var))
     call add(retval, {'word': var
-          \ , 'menu' : '[V] ' . yavimomni#util#truncate(expl, yavimomni#util#truncate_length())})
+          \ , 'kind' : 'variable'
+          \ , 'menu' : yavimomni#util#truncate(expl, yavimomni#util#truncate_length())})
   endfor
   return copy(retval)
 endfunction

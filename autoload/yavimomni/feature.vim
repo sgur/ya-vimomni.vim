@@ -15,7 +15,8 @@ function! yavimomni#feature#init()
         if !empty(_)
           call add(features, {
                 \ 'word': _[1],
-                \ 'menu': '[+] ' . yavimomni#util#truncate(_[2], yavimomni#util#truncate_length())
+                \ 'kind': 'feature',
+                \ 'menu': yavimomni#util#truncate(_[2], yavimomni#util#truncate_length())
                 \ })
         endif
       endfor

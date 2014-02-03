@@ -50,7 +50,8 @@ function! yavimomni#option#get(arglead)
   let arglead = substitute(a:arglead, prefix, '', '')
   return map(copy(s:options), '
         \ { "word": prefix . v:val
-        \ , "menu": "[O]" . yavimomni#util#truncate(eval("&".prefix . v:val), yavimomni#util#truncate_length())
+        \ , "kind": "option"
+        \ , "menu": yavimomni#util#truncate(eval("&".prefix . v:val), yavimomni#util#truncate_length())
         \ }')
 endfunction
 
