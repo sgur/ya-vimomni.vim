@@ -137,7 +137,7 @@ function! s:enable_module_from_pattern(line)
     return _
   endif
 
-  if a:line =~# '\<\%(se\%[tlocal]\s\+\|let\s\+&\)'
+  if a:line =~# '\<\%(se\%[tlocal]\s\+\|&\)'
     call add(_, 'option')
     return _
   endif
@@ -160,7 +160,7 @@ function! s:enable_module_from_pattern(line)
     call extend(_, ['variable', 'script_variable'])
   endif
 
-  if a:line =~# 'let.\+=\|call\|if\|elseif\?\|wh\%[ile]\|for\|th\%[row]\|ec\%[ho]\|echo\%(n\|hl\?\|m\%[sg]\|e\%[rr]\)\|exe\%[cute]\|\u\k\+\s'
+  if a:line =~# 'let.\+=\|call\?\|if\|elseif\?\|wh\%[ile]\|for\|th\%[row]\|ec\%[ho]\|echo\%(n\|hl\?\|m\%[sg]\|e\%[rr]\)\|exe\%[cute]\|retu\%[rn]\|\u\k\+\s'
     call extend(_, ['function', 'user_function'])
     call extend(_, ['variable', 'script_variable'])
   else
