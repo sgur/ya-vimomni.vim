@@ -123,17 +123,18 @@ endfunction
 function! s:enable_module_from_pattern(line)
   let _ = []
 
-  if a:line =~# '\<has([''"]\%' . col('.') . 'c\k*[''")]*$'
+  if a:line =~# '&\S*$'
+    call add(_, 'option')
+  elseif a:line =~# '@\S*$'
+    call add(_, 'register')
+  elseif a:line =~# '$\S*$'
+    call add(_, 'environment')
+  elseif a:line =~# '\<has([''"]\%' . col('.') . 'c\k*[''")]*$'
     call add(_, 'feature')
   elseif a:line =~# '\<expand([''"]<\%>' . col('.') . 'c\k*[''")]*$'
     call add(_, 'specials')
-  elseif a:line =~# '\<\%(se\%[tlocal]\s\+\|&\)'
-        \ || a:line =~# '\%(let\|unl\%[et]\)\s*&[^=]*$'
+  elseif a:line =~# '\<\%(se\%[tlocal]\)\s\+'
     call add(_, 'option')
-  elseif a:line =~# '\%(let\|unl\%[et]\)\s*@[^=]*$'
-    call add(_, 'register')
-  elseif a:line =~# '\%(let\|unl\%[et]\)\s*$[^=]*$'
-    call add(_, 'environment')
   elseif a:line =~# '\%(let\|unl\%[et]\)\s*[^=]*$'
         \ ||  a:line =~# 'lockv\%(ar\)'
         \ || a:line =~# 'unlo\%(ckvar\)'
