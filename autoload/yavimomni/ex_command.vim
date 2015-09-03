@@ -1,6 +1,6 @@
 " Ex-commands
 
-function! yavimomni#ex_command#init()
+function! s:init()
   let helpfile = expand(findfile('doc/index.txt', &runtimepath))
   if yavimomni#cache#exists('ex_command', helpfile)
     let s:ex_commands = yavimomni#cache#load('ex_command')
@@ -40,4 +40,4 @@ endfunction
 
 " Initialization
 
-call yavimomni#ex_command#init()
+call s:init()

@@ -34,13 +34,12 @@ function! yavimomni#complete(findstart, base)
     if a:findstart " 1st time
       let start = col('.') - 1
       let line = getline('.')
-      while start > 0 && line[start-1] =~ '\k\|[<>]'
+      while start > 0 && line[start-1] =~ '\%(\k\|[<>]\)'
         let start -= 1
       endwhile
       return start
     else " 2nd time
       let context = s:concat_lines('.')
-      " let &titlestring = '[DEBUG]context:(' . context . ') base:(' . a:base . ')'
       if context =~ '^\s*"'
         return [] "Comment
       endif
@@ -66,11 +65,10 @@ endfunction
 
 function! s:concat_lines(pos)
   let lnum = line(a:pos)
-
   let line = getline(lnum)
-  while line =~ '^\s*\\' && lnum > 0
-    let line = getline(lnum) . substitute(line, '^\s*\\', '', '')
+  while line =~ '^\s*\\' && lnum > 1
     let lnum -= 1
+    let line = getline(lnum) . substitute(line, '^\s*\\', '', '')
   endwhile
   return line =~ '^\s*$' ? '' : split(line, '\%(\S\?\zs\s*|\|<bar>\)\s*')[-1]
 endfunction
@@ -81,12 +79,11 @@ function! s:get_candidates_by_context(line, arglead)
   if a:line =~# '\.$'
     return _
   endif
-  let line = a:line . a:arglead
-  let term = matchstr(line, '\k\+$')
+  let line = a:line[ : col('.')-2] . a:arglead . a:line[col('.')-1 : ]
+  let term = matchstr(line, '[[:alnum:]<>]\+$')
   for kind in s:enable_module_from_pattern(line)
     call extend(_, yavimomni#{kind}#get(term))
   endfor
-  " let &titlestring.='['.term.' '.join(s:enable_module_from_pattern(line), ',').']'
   call filter(_, 'stridx(v:val["word"], term) == 0')
   if a:arglead != term
     for cand in _
@@ -123,46 +120,38 @@ function! s:get_candidates_of_bracket(receiver)
   return map(keys(recv), '{"word" : "''" . v:val . "''", "menu" : string(eval(var . "[\"" . v:val . "\"]"))}')
 endfunction
 
-
 function! s:enable_module_from_pattern(line)
   let _ = []
 
-  if a:line =~ 'colo\%[rscheme]\s\+$'
-    call add(_, 'colorscheme')
-    return _
-  endif
-
-  if a:line =~# '\<has([''"]\w*\%([''"])\)\?$'
+  if a:line =~# '\<has([''"]\%' . col('.') . 'c\k*[''")]*$'
     call add(_, 'feature')
-    return _
-  endif
-
-  if a:line =~# '\<\%(se\%[tlocal]\s\+\|&\)'
-    call add(_, 'option')
-    return _
-  endif
-
-  if a:line =~# '\<expand([''"][<>[:alnum:]]*\%([''"])\)\?$'
+  elseif a:line =~# '\<expand([''"]<\%>' . col('.') . 'c\k*[''")]*$'
     call add(_, 'specials')
-    return _
-  endif
-
-  if a:line =~# '\<\%(' . join([
+  elseif a:line =~# '\<\%(se\%[tlocal]\s\+\|&\)'
+        \ || a:line =~# '\%(let\|unl\%[et]\)\s*&[^=]*$'
+    call add(_, 'option')
+  elseif a:line =~# '\%(let\|unl\%[et]\)\s*@[^=]*$'
+    call add(_, 'register')
+  elseif a:line =~# '\%(let\|unl\%[et]\)\s*$[^=]*$'
+    call add(_, 'environment')
+  elseif a:line =~# '\%(let\|unl\%[et]\)\s*[^=]*$'
+        \ ||  a:line =~# 'lockv\%(ar\)'
+        \ || a:line =~# 'unlo\%(ckvar\)'
+    call extend(_, ['variable', 'script_variable'])
+    call extend(_, ['variable', 'script_variable'])
+  elseif a:line =~# 'let.\+=\|call\?\|if\|elseif\?\|wh\%[ile]\|for.\+in\|th\%[row]\|ec\%[ho]\|echo\%(n\|hl\?\|m\%[sg]\|e\%[rr]\)\|exe\%[cute]\|retu\%[rn]\|\u\k\+\s'
+    call extend(_, ['function', 'user_function', 'variable', 'script_variable'])
+  elseif a:line =~# 'for'
+    call add(_, 'empty')
+  elseif a:line =~ 'colo\%[rscheme]\s\+$'
+    call add(_, 'colorscheme')
+  elseif a:line =~# '\<\%(' . join([
         \ 's\?map', 'map!', '[nvxoilc]m\%(ap\)\?', 'no\%(remap\)\?',
         \ '\%(nn\|vn\|xn\)\%(oremap\)\?', 'snor\%(emap\)\?',
         \ '\%(ono\|no\|ino\)\%(remap\)\?', 'ln\%(oremap\)\?',
         \ 'cno\%(remap\)\?',
         \ ], '\|') . '\)\>[^:]*$'
     call add(_, 'map_argument')
-  endif
-
-  if a:line =~# 'let[^=]\+$'
-    call extend(_, ['variable', 'script_variable'])
-  endif
-
-  if a:line =~# 'let.\+=\|call\?\|if\|elseif\?\|wh\%[ile]\|for\|th\%[row]\|ec\%[ho]\|echo\%(n\|hl\?\|m\%[sg]\|e\%[rr]\)\|exe\%[cute]\|retu\%[rn]\|\u\k\+\s'
-    call extend(_, ['function', 'user_function'])
-    call extend(_, ['variable', 'script_variable'])
   else
     call extend(_, ['ex_command', 'user_command'])
   endif
@@ -172,3 +161,4 @@ endfunction
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
+finish

@@ -1,6 +1,6 @@
 " Built-in functions
 
-function! yavimomni#function#init()
+function! s:init()
   let helpfile = expand(findfile('doc/eval.txt', &runtimepath))
   if yavimomni#cache#exists('function', helpfile)
     let s:builtin_functions = yavimomni#cache#load('function')
@@ -40,4 +40,4 @@ endfunction
 
 " Initialization
 
-call yavimomni#function#init()
+call s:init()

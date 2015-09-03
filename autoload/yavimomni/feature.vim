@@ -1,6 +1,6 @@
 " feature
 
-function! yavimomni#feature#init()
+function! s:init()
   let helpfile = expand(findfile('doc/eval.txt', &runtimepath))
   if yavimomni#cache#exists('feature', helpfile)
     let s:features = yavimomni#cache#load('feature')
@@ -36,4 +36,4 @@ endfunction
 
 " Initialization
 
-call yavimomni#feature#init()
+call s:init()
