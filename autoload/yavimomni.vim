@@ -73,14 +73,13 @@ function! s:concat_lines(pos)
   return line =~ '^\s*$' ? '' : split(line, '\%(\S\?\zs\s*|\|<bar>\)\s*')[-1]
 endfunction
 
-
 function! s:get_candidates_by_context(line, arglead)
   let _ = []
   if a:line =~# '\.$'
     return _
   endif
   let line = a:line[ : col('.')-2] . a:arglead . a:line[col('.')-1 : ]
-  let term = matchstr(line, '[[:alnum:]<>]\+$')
+  let term = matchstr(line, '\(\k\+\|[<>]\)$')
   for kind in s:enable_module_from_pattern(line)
     call extend(_, yavimomni#{kind}#get(term))
   endfor
