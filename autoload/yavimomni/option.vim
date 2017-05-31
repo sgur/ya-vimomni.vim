@@ -10,7 +10,7 @@ function! yavimomni#option#get(arglead)
   let opt={}
   execute "silent normal! :let &" . a:arglead . "\<c-a>\<c-\>eextend(opt, {'candidates':getcmdline()}).candidates\n"
   return map(filter(has_key(opt, 'candidates') && opt['candidates'] !~ ''
-        \ ? split(opt['candidates'][stridx(opt['candidates'], '\&' . prefix)+1 :],'\\\@<!\s\+') : []
+        \ ? split(opt['candidates'][stridx(opt['candidates'], '&' . prefix)+1 :],'\\\@<!\s\+') : []
         \ , 'exists("&" . v:val)'), '
         \ { "word": prefix . v:val
         \ , "kind": "option"
